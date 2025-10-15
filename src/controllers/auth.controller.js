@@ -1,30 +1,33 @@
 // src/controllers/auth.controller.js
 
+// Importamos el servicio de autenticación.
+const authService = require('../services/auth.service');
+
 /**
  * Controlador para manejar el registro de un nuevo usuario.
- * @param {object} req - El objeto de la petición (request).
- * @param {object} res - El objeto de la respuesta (response).
  */
 const register = async (req, res) => {
   try {
-    // 1. Extraemos los datos del cuerpo de la petición.
-    const { nombre, email, contrasena, colonia } = req.body;
+    // 1. Pasamos todos los datos del cuerpo de la petición al servicio.
+    const newUser = await authService.registerUser(req.body);
     
-    // --- TODO: Llamar al servicio de autenticación para crear el usuario ---
-    
-    // 2. Por ahora, solo respondemos con un mensaje de éxito temporal.
-    res.status(201).json({ 
-      message: 'Petición de registro recibida correctamente',
-      data: { nombre, email, colonia }
+    // 2. Si el servicio se ejecuta sin errores, respondemos con el usuario creado.
+    res.status(201).json({
+      message: 'Usuario registrado exitosamente',
+      usuario: newUser,
     });
 
   } catch (error) {
-    // 3. Si algo sale mal, enviamos una respuesta de error.
+    // 3. Manejamos los errores que pueda lanzar el servicio.
+    if (error.message === 'El correo electrónico ya está registrado') {
+      // Si el email ya existe, enviamos un error 409 (Conflicto).
+      return res.status(409).json({ message: error.message });
+    }
+    // Para cualquier otro error, enviamos un error 500 (Error del Servidor).
     res.status(500).json({ message: 'Error en el servidor', error: error.message });
   }
 };
 
-// Exportamos la función para que pueda ser usada por el enrutador.
 module.exports = {
   register,
 };
