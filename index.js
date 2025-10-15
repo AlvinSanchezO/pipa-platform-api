@@ -2,7 +2,10 @@
 
 const express = require('express');
 const { sequelize } = require('./src/models/index');
+
+// Importamos ambos archivos de rutas
 const authRoutes = require('./src/routes/auth.routes');
+const userRoutes = require('./src/routes/user.routes');
 
 // Creamos la aplicación de Express
 const app = express();
@@ -12,8 +15,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // --- Registramos las Rutas ---
-// Todas las rutas definidas en auth.routes.js estarán bajo el prefijo '/api/auth'
+// Rutas de autenticación bajo el prefijo '/api/auth'
 app.use('/api/auth', authRoutes);
+// Rutas de usuario bajo el prefijo '/api/user'
+app.use('/api/user', userRoutes);
 
 // Función para iniciar el servidor y la conexión a la base de datos
 const startServer = async () => {
@@ -23,8 +28,7 @@ const startServer = async () => {
     console.log('✅ Conexión a la base de datos establecida correctamente.');
 
     // 2. Sincronizamos los modelos con la base de datos.
-    // Esto crea las tablas si no existen, basado en nuestros modelos de Sequelize.
-    await sequelize.sync({ force: false }); // 'force: false' para no borrar datos existentes
+    await sequelize.sync({ force: false });
     console.log('✅ Modelos sincronizados con la base de datos.');
 
     // 3. Iniciamos el servidor para que escuche peticiones en el puerto definido
