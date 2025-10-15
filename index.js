@@ -7,6 +7,7 @@ const { sequelize } = require('./src/models/index');
 const authRoutes = require('./src/routes/auth.routes');
 const userRoutes = require('./src/routes/user.routes');
 const reporteRoutes = require('./src/routes/reporte.routes');
+const proveedorRoutes = require('./src/routes/proveedor.routes');
 
 // Creamos la aplicación de Express
 const app = express();
@@ -22,6 +23,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 // Rutas de reportes bajo el prefijo '/api/reportes'
 app.use('/api/reportes', reporteRoutes);
+// Rutas de proveedores bajo el prefijo '/api/proveedores'
+app.use('/api/proveedores', proveedorRoutes);
 
 // Función para iniciar el servidor y la conexión a la base de datos
 const startServer = async () => {
