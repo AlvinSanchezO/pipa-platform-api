@@ -3,9 +3,10 @@
 const express = require('express');
 const { sequelize } = require('./src/models/index');
 
-// Importamos ambos archivos de rutas
+// Importamos todos los archivos de rutas
 const authRoutes = require('./src/routes/auth.routes');
 const userRoutes = require('./src/routes/user.routes');
+const reporteRoutes = require('./src/routes/reporte.routes');
 
 // Creamos la aplicación de Express
 const app = express();
@@ -19,6 +20,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 // Rutas de usuario bajo el prefijo '/api/user'
 app.use('/api/user', userRoutes);
+// Rutas de reportes bajo el prefijo '/api/reportes'
+app.use('/api/reportes', reporteRoutes);
 
 // Función para iniciar el servidor y la conexión a la base de datos
 const startServer = async () => {
