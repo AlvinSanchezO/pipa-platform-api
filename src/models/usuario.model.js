@@ -8,7 +8,7 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   // Usamos sequelize.define() para crear el modelo 'Usuario'.
   // Sequelize creará automáticamente la tabla 'Usuarios' (en plural).
-  sequelize.define('Usuario', {
+  return sequelize.define('Usuario', {
     // No necesitamos definir 'id'. Sequelize lo crea por defecto como
     // una clave primaria autoincremental.
 

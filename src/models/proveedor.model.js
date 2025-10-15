@@ -1,26 +1,24 @@
 // src/models/proveedor.model.js
-
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  // Definimos el modelo 'Proveedor', que creará la tabla 'Proveedores'.
-  sequelize.define('Proveedor', {
+  return sequelize.define('Proveedor', {
     nombre_negocio: {
       type: DataTypes.STRING,
-      allowNull: false, // El nombre del negocio es obligatorio.
+      allowNull: false,
     },
     telefono: {
       type: DataTypes.STRING,
-      allowNull: true, // El teléfono es opcional.
+      allowNull: true,
     },
     zonas_cobertura: {
-      type: DataTypes.TEXT, // Usamos TEXT para descripciones potencialmente largas.
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     calificacion_promedio: {
-      type: DataTypes.FLOAT, // Usamos FLOAT para calificaciones con decimales (ej. 4.5).
+      type: DataTypes.FLOAT,
       allowNull: false,
-      defaultValue: 0, // Por defecto, un nuevo proveedor inicia con 0.
+      defaultValue: 0,
     },
   });
 };

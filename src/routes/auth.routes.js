@@ -2,15 +2,21 @@
 
 // Importamos el Router de Express para definir nuestras rutas.
 const { Router } = require('express');
-// Importamos la función 'register' que crearemos en nuestro controlador.
-const { register } = require('../controllers/auth.controller');
+// Importamos las funciones 'register' y 'login' de nuestro controlador.
+const { register, login } = require('../controllers/auth.controller');
 
 // Creamos una nueva instancia del Router.
 const router = Router();
 
-// Definimos la ruta para el registro.
+// --- Definición de Rutas de Autenticación ---
+
+// Ruta para el registro de un nuevo usuario.
 // Cuando llegue una petición POST a '/register', se ejecutará la función 'register'.
 router.post('/register', register);
 
-// Exportamos el router para usarlo en nuestro archivo principal.
+// Ruta para el inicio de sesión de un usuario.
+// Cuando llegue una petición POST a '/login', se ejecutará la función 'login'.
+router.post('/login', login);
+
+// Exportamos el router para usarlo en nuestro archivo principal del servidor.
 module.exports = router;
