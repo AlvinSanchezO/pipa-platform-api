@@ -5,8 +5,7 @@ const { verifyToken } = require('../middleware/auth.middleware');
 
 const router = Router();
 
-// Definimos la ruta GET para obtener todos los proveedores.
-// La protegemos con nuestro middleware 'verifyToken'.
+// Ruta protegida para obtener todos los proveedores
 router.get('/', verifyToken, getProviders);
 
 module.exports = router;
