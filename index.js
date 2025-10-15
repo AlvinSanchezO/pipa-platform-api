@@ -8,6 +8,7 @@ const authRoutes = require('./src/routes/auth.routes');
 const userRoutes = require('./src/routes/user.routes');
 const reporteRoutes = require('./src/routes/reporte.routes');
 const proveedorRoutes = require('./src/routes/proveedor.routes');
+const pedidoRoutes = require('./src/routes/pedido.routes');
 
 // Creamos la aplicación de Express
 const app = express();
@@ -25,6 +26,8 @@ app.use('/api/user', userRoutes);
 app.use('/api/reportes', reporteRoutes);
 // Rutas de proveedores bajo el prefijo '/api/proveedores'
 app.use('/api/proveedores', proveedorRoutes);
+// Rutas de pedidos bajo el prefijo '/api/pedidos'
+app.use('/api/pedidos', pedidoRoutes);
 
 // Función para iniciar el servidor y la conexión a la base de datos
 const startServer = async () => {
