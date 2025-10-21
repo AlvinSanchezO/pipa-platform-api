@@ -16,5 +16,6 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    // usuario_id and proveedor_id are added automatically via association
   });
 };
