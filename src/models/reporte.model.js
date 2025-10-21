@@ -14,5 +14,6 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    // usuario_id is added automatically via association
   });
 };

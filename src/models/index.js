@@ -1,39 +1,37 @@
 // src/models/index.js
-
-// 1. Importamos la conexión a la base de datos
 const { sequelize } = require('../config/database');
 
-// 2. Importamos las funciones que definen cada modelo
+// Importar los modelos
 const UsuarioModel = require('./usuario.model');
 const ProveedorModel = require('./proveedor.model');
 const PedidoModel = require('./pedido.model');
 const ReporteModel = require('./reporte.model');
 
-// 3. Inicializamos cada modelo pasándole la conexión (sequelize)
+// Inicializar los modelos
 const Usuario = UsuarioModel(sequelize);
 const Proveedor = ProveedorModel(sequelize);
 const Pedido = PedidoModel(sequelize);
 const Reporte = ReporteModel(sequelize);
 
-// --- 4. Definimos las Relaciones ---
+// --- Definir las Relaciones ---
 
-// Un Usuario puede tener muchos Pedidos
+// Un Usuario puede tener un (perfil de) Proveedor.
+Usuario.hasOne(Proveedor, { foreignKey: 'usuario_id' });
+Proveedor.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+
+// Un Usuario tiene muchos Pedidos
 Usuario.hasMany(Pedido, { foreignKey: 'usuario_id' });
-// Un Pedido pertenece a un solo Usuario
 Pedido.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
-// Un Proveedor puede tener muchos Pedidos
+// Un Proveedor tiene muchos Pedidos
 Proveedor.hasMany(Pedido, { foreignKey: 'proveedor_id' });
-// Un Pedido pertenece a un solo Proveedor
 Pedido.belongsTo(Proveedor, { foreignKey: 'proveedor_id' });
 
-// Un Usuario puede hacer muchos Reportes
+// Un Usuario tiene muchos Reportes
 Usuario.hasMany(Reporte, { foreignKey: 'usuario_id' });
-// Un Reporte pertenece a un solo Usuario
 Reporte.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
-
-// 5. Exportamos todos los modelos inicializados y la conexión
+// Exportar todo
 module.exports = {
   sequelize,
   Usuario,

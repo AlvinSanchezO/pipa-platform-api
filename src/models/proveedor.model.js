@@ -20,5 +20,6 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: 0,
     },
+    // usuario_id is added automatically via association
   });
 };
