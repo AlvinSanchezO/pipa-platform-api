@@ -39,7 +39,6 @@ const register = async (req, res) => {
     const userId = req.user.id; // ID del usuario desde el token.
     const providerData = req.body; // Datos del negocio desde el body.
 
-    // Validación básica
     if (!providerData.nombre_negocio) {
       return res.status(400).json({ message: 'El nombre del negocio es requerido.' });
     }
@@ -55,9 +54,37 @@ const register = async (req, res) => {
   }
 };
 
+/**
+ * Controlador para que un proveedor actualice su perfil.
+ */
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; // ID del usuario (proveedor) desde el token.
+    const updateData = req.body; // Datos a actualizar (telefono, zonas_cobertura).
+
+    const allowedUpdates = {};
+    if (updateData.telefono !== undefined) allowedUpdates.telefono = updateData.telefono;
+    if (updateData.zonas_cobertura !== undefined) allowedUpdates.zonas_cobertura = updateData.zonas_cobertura;
+
+    if (Object.keys(allowedUpdates).length === 0) {
+        return res.status(400).json({ message: 'No se proporcionaron datos válidos para actualizar.' });
+    }
+
+    const proveedorActualizado = await proveedorService.updateProviderProfile(userId, allowedUpdates);
+    res.status(200).json(proveedorActualizado);
+
+  } catch (error) {
+    if (error.message.includes('Perfil de proveedor no encontrado')) {
+      return res.status(404).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Error al actualizar el perfil del proveedor', error: error.message });
+  }
+};
+
 // Exporta todas las funciones del controlador
 module.exports = {
   getProviders,
   getMyOrders,
   register,
+  updateProfile,
 };

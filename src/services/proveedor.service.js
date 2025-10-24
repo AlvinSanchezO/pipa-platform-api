@@ -3,7 +3,6 @@ const { Proveedor, Pedido, Usuario } = require('../models/index'); // Make sure 
 
 /**
  * Servicio para obtener todos los proveedores.
- * @returns {Promise<Array>} - Un arreglo con todos los proveedores.
  */
 const getAllProviders = async () => {
   const proveedores = await Proveedor.findAll({
@@ -14,8 +13,6 @@ const getAllProviders = async () => {
 
 /**
  * Servicio para obtener los pedidos de un proveedor específico.
- * @param {number} proveedorId - El ID del proveedor.
- * @returns {Promise<Array>} - Un arreglo con los pedidos del proveedor.
  */
 const getOrdersByProviderId = async (proveedorId) => {
   const pedidos = await Pedido.findAll({
@@ -30,29 +27,43 @@ const getOrdersByProviderId = async (proveedorId) => {
 
 /**
  * Servicio para registrar un nuevo perfil de proveedor.
- * @param {object} providerData - Datos del proveedor (nombre_negocio, telefono, etc.).
- * @param {number} userId - ID del usuario que se está registrando como proveedor.
- * @returns {Promise<object>} - El objeto del proveedor creado.
  */
 const registerProvider = async (providerData, userId) => {
   const { nombre_negocio, telefono, zonas_cobertura } = providerData;
-
-  // 1. Verificar si este usuario ya tiene un perfil de proveedor
   const existingProvider = await Proveedor.findOne({ where: { usuario_id: userId } });
   if (existingProvider) {
     throw new Error('Este usuario ya está registrado como proveedor.');
   }
-
-  // 2. Crear el nuevo perfil de proveedor, vinculándolo al usuario
   const nuevoProveedor = await Proveedor.create({
     nombre_negocio,
     telefono,
     zonas_cobertura,
-    usuario_id: userId, // Vincula al usuario existente
-    // calificacion_promedio tendrá el valor por defecto (0)
+    usuario_id: userId,
   });
-
   return nuevoProveedor;
+};
+
+/**
+ * Servicio para que un proveedor actualice su perfil.
+ */
+const updateProviderProfile = async (userId, updateData) => {
+  // 1. Encontrar el perfil del proveedor asociado al usuario.
+  const proveedor = await Proveedor.findOne({ where: { usuario_id: userId } });
+  if (!proveedor) {
+    throw new Error('Perfil de proveedor no encontrado para este usuario.');
+  }
+
+  // 2. Actualizar solo los campos permitidos.
+  if (updateData.telefono !== undefined) {
+    proveedor.telefono = updateData.telefono;
+  }
+  if (updateData.zonas_cobertura !== undefined) {
+    proveedor.zonas_cobertura = updateData.zonas_cobertura;
+  }
+
+  // 3. Guardar los cambios.
+  await proveedor.save();
+  return proveedor;
 };
 
 // Exporta todas las funciones del servicio
@@ -60,4 +71,5 @@ module.exports = {
   getAllProviders,
   getOrdersByProviderId,
   registerProvider,
+  updateProviderProfile,
 };
