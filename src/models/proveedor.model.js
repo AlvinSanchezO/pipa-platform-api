@@ -20,6 +20,19 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: 0,
     },
-    // usuario_id is added automatically via association
+    // NUEVO CAMPO: Estado del proveedor
+    estado: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'pendiente', // Por defecto, todos inician como pendientes
+      validate: {
+        // Aseguramos que el estado sea uno de los valores permitidos
+        isIn: [['pendiente', 'aprobado', 'rechazado', 'suspendido']]
+      }
+    }
+    // usuario_id es añadido por la relación en index.js
+  }, {
+    createdAt: 'fecha_creacion',
+    updatedAt: 'fecha_actualizacion',
   });
 };
