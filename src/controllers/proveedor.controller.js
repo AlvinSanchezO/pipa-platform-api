@@ -19,25 +19,45 @@ const getProviders = async (req, res) => {
  */
 const getMyOrders = async (req, res) => {
   try {
-    // 1. Obtenemos el ID del usuario desde el token.
     const userId = req.user.id;
-
-    // 2. Buscamos el perfil de proveedor asociado a este usuario.
     const proveedor = await Proveedor.findOne({ where: { usuario_id: userId } });
     if (!proveedor) {
       return res.status(403).json({ message: 'Acceso denegado. No es una cuenta de proveedor.' });
     }
-
-    // 3. Usamos el ID del proveedor para buscar sus pedidos.
     const pedidos = await proveedorService.getOrdersByProviderId(proveedor.id);
     res.status(200).json(pedidos);
-
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener los pedidos del proveedor', error: error.message });
   }
 };
 
+/**
+ * Controlador para registrar un nuevo proveedor.
+ */
+const register = async (req, res) => {
+  try {
+    const userId = req.user.id; // ID del usuario desde el token.
+    const providerData = req.body; // Datos del negocio desde el body.
+
+    // Validación básica
+    if (!providerData.nombre_negocio) {
+      return res.status(400).json({ message: 'El nombre del negocio es requerido.' });
+    }
+
+    const nuevoProveedor = await proveedorService.registerProvider(providerData, userId);
+    res.status(201).json(nuevoProveedor);
+
+  } catch (error) {
+    if (error.message.includes('ya está registrado')) {
+      return res.status(409).json({ message: error.message }); // 409 Conflict
+    }
+    res.status(500).json({ message: 'Error al registrar el proveedor', error: error.message });
+  }
+};
+
+// Exporta todas las funciones del controlador
 module.exports = {
   getProviders,
   getMyOrders,
+  register,
 };
