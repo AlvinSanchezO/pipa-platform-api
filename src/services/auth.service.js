@@ -1,6 +1,5 @@
 // src/services/auth.service.js
 
-// Importamos los módulos necesarios
 const { Usuario } = require('../models/index'); // Modelo para interactuar con la tabla de usuarios
 const bcrypt = require('bcryptjs');             // Para encriptar y comparar contraseñas
 const jwt = require('jsonwebtoken');            // Para generar JSON Web Tokens
@@ -29,6 +28,7 @@ const registerUser = async (userData) => {
     email,
     contrasena: hashedPassword,
     colonia,
+    // El rol se establece por defecto como 'cliente' en el modelo
   });
 
   // 4. Devolvemos el usuario creado, pero eliminamos la contraseña por seguridad.
@@ -40,8 +40,8 @@ const registerUser = async (userData) => {
 
 /**
  * Servicio para autenticar un usuario y generar un JWT.
- * @param {string} email 
- * @param {string} contrasena 
+ * @param {string} email
+ * @param {string} contrasena
  * @returns {Promise<string>} - El JSON Web Token.
  */
 const loginUser = async (email, contrasena) => {
@@ -58,9 +58,10 @@ const loginUser = async (email, contrasena) => {
   }
 
   // 3. Si las credenciales son correctas, generamos el JWT.
-  const payload = { id: user.id, email: user.email };
+  // 👇 INCLUIMOS el 'rol' en el payload del token.
+  const payload = { id: user.id, email: user.email, rol: user.rol };
   // NOTA: 'TU_SECRETO_JWT' debe ser una variable de entorno en un proyecto real.
-  const token = jwt.sign(payload, 'TU_SECRETO_JWT', { expiresIn: '1h' }); 
+  const token = jwt.sign(payload, 'TU_SECRETO_JWT', { expiresIn: '1h' });
 
   return token;
 };
