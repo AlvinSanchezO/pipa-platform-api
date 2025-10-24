@@ -1,4 +1,4 @@
-// index.js (Raíz del proyecto - Versión Segura Final)
+// index.js (Raíz del proyecto)
 const express = require('express');
 const { sequelize } = require('./src/config/database');
 
@@ -8,6 +8,7 @@ const userRoutes = require('./src/routes/user.routes');
 const reporteRoutes = require('./src/routes/reporte.routes');
 const proveedorRoutes = require('./src/routes/proveedor.routes');
 const pedidoRoutes = require('./src/routes/pedido.routes');
+const adminRoutes = require('./src/routes/admin.routes'); // 👈 Importa las rutas de admin
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/reportes', reporteRoutes);
 app.use('/api/proveedores', proveedorRoutes);
 app.use('/api/pedidos', pedidoRoutes);
+app.use('/api/admin', adminRoutes); // 👈 Registra las rutas de admin
 
 // --- Función para iniciar el servidor ---
 const startServer = async () => {
@@ -28,7 +30,7 @@ const startServer = async () => {
     await sequelize.authenticate();
     console.log('✅ Conexión a la base de datos establecida correctamente.');
 
-    // 👇 ASEGÚRATE DE QUE ESTÉ EN force: false
+    // Asegúrate de que esto esté en force: false para uso normal
     await sequelize.sync({ force: false });
     console.log('✅ Modelos sincronizados con la base de datos.');
 

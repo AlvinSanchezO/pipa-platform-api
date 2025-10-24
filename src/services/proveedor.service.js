@@ -6,9 +6,8 @@ const { Proveedor, Pedido, Usuario } = require('../models/index'); // Asegúrate
  */
 const getAllProviders = async () => {
   const proveedores = await Proveedor.findAll({
-    // Solo mostramos proveedores aprobados en la lista pública
-    where: { estado: 'aprobado' },
-    attributes: { exclude: ['fecha_creacion', 'fecha_actualizacion', 'estado', 'usuario_id'] } // Ocultamos campos internos
+    where: { estado: 'aprobado' }, // Solo muestra proveedores aprobados
+    attributes: { exclude: ['fecha_creacion', 'fecha_actualizacion', 'estado', 'usuario_id'] }
   });
   return proveedores;
 };
@@ -32,20 +31,16 @@ const getOrdersByProviderId = async (proveedorId) => {
  */
 const registerProvider = async (providerData, userId) => {
   const { nombre_negocio, telefono, zonas_cobertura } = providerData;
-
   const existingProvider = await Proveedor.findOne({ where: { usuario_id: userId } });
   if (existingProvider) {
     throw new Error('Este usuario ya está registrado como proveedor.');
   }
-
   const nuevoProveedor = await Proveedor.create({
     nombre_negocio,
     telefono,
     zonas_cobertura,
     usuario_id: userId,
-    // El estado se establece automáticamente como 'pendiente' por el defaultValue.
   });
-
   return nuevoProveedor;
 };
 
@@ -57,15 +52,36 @@ const updateProviderProfile = async (userId, updateData) => {
   if (!proveedor) {
     throw new Error('Perfil de proveedor no encontrado para este usuario.');
   }
-
   if (updateData.telefono !== undefined) {
     proveedor.telefono = updateData.telefono;
   }
   if (updateData.zonas_cobertura !== undefined) {
     proveedor.zonas_cobertura = updateData.zonas_cobertura;
   }
-
   await proveedor.save();
+  return proveedor;
+};
+
+/**
+ * Servicio (para Admin) para aprobar un proveedor pendiente.
+ * @param {number} providerId - El ID del proveedor a aprobar.
+ * @returns {Promise<object>} - El perfil del proveedor actualizado.
+ */
+const approveProvider = async (providerId) => {
+  const proveedor = await Proveedor.findByPk(providerId); // Busca por clave primaria
+
+  if (!proveedor) {
+    throw new Error('Proveedor no encontrado.');
+  }
+
+  if (proveedor.estado !== 'pendiente') {
+    throw new Error('Este proveedor no está pendiente de aprobación.');
+  }
+
+  // Actualiza el estado a 'aprobado'
+  proveedor.estado = 'aprobado';
+  await proveedor.save();
+
   return proveedor;
 };
 
@@ -75,4 +91,5 @@ module.exports = {
   getOrdersByProviderId,
   registerProvider,
   updateProviderProfile,
+  approveProvider,
 };

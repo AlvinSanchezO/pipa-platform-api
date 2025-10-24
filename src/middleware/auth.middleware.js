@@ -16,16 +16,17 @@ const verifyToken = (req, res, next) => {
   }
 
   // 3. Verificamos la validez del token.
+  // NOTA: Usa la misma clave secreta que en el servicio de login.
   jwt.verify(token, 'TU_SECRETO_JWT', (err, decoded) => {
     if (err) {
       // Si el token no es válido (expirado, manipulado), enviamos un error 401.
       return res.status(401).json({ message: 'No autorizado. Token inválido.' });
     }
 
-    // 4. Si el token es válido, guardamos los datos del usuario en la petición.
-    // Esto permite que los siguientes controladores sepan quién está haciendo la petición.
+    // 4. Si el token es válido, guardamos los datos decodificados (incluyendo id, email y rol)
+    // en la propiedad req.user para que los siguientes middlewares/controladores los usen.
     req.user = decoded;
-    next(); // Permite que la petición continúe hacia el controlador final.
+    next(); // Permite que la petición continúe.
   });
 };
 
