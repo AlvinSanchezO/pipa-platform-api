@@ -31,7 +31,7 @@ const startServer = async () => {
     console.log('✅ Conexión a la base de datos establecida correctamente.');
 
     // Asegúrate de que esto esté en force: false para uso normal
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ force: true });
     console.log('✅ Modelos sincronizados con la base de datos.');
 
     app.listen(PORT, () => {
