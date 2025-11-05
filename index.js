@@ -1,4 +1,5 @@
 // index.js (Raíz del proyecto)
+// Forzando un nuevo despliegue para incluir CORS
 const express = require('express');
 const cors = require('cors'); // 👈 1. Importa cors
 const { sequelize } = require('./src/config/database');
